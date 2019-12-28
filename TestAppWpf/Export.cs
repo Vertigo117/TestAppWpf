@@ -29,7 +29,7 @@ namespace TestAppWpf
             }
         }
 
-        private static System.Data.DataTable ConvertToDataTable<T>(ObservableCollection<T> users)
+        private static System.Data.DataTable ConvertToDataTable<T>(IEnumerable<T> users)
 
         {
             PropertyDescriptorCollection properties =
@@ -60,21 +60,36 @@ namespace TestAppWpf
 
         }
 
-        public static void AsXls<T>(ObservableCollection<T> users, string saveFilePath)
+        public static void AsXls(Dictionary<IEnumerable<User>, string> usersList, string saveFilePath)
         {
-            System.Web.UI.WebControls.DataGrid grid = new System.Web.UI.WebControls.DataGrid();
-            grid.HeaderStyle.Font.Bold = true;
-            grid.DataSource = ConvertToDataTable(users);
+            Application excelApp = new Application();
+            excelApp.Workbooks.Add();
 
-            grid.DataBind();
-
-            using (StreamWriter sw = new StreamWriter(saveFilePath))
+            foreach (KeyValuePair<IEnumerable<User>,string> u in usersList)
             {
-                using (HtmlTextWriter hw = new HtmlTextWriter(sw))
+                System.Data.DataTable table = ConvertToDataTable(u.Key);
+                Worksheet workSheet = excelApp.ActiveSheet;
+                workSheet.Name = u.Value;
+
+                for(int i=0; i < table.Columns.Count; i++)
                 {
-                    grid.RenderControl(hw);
+                    workSheet.Cells[1, i + 1] = table.Columns[i].ColumnName;
                 }
+
+                for(int i=0;i < table.Rows.Count;i++)
+                {
+                    for(int j=0; j < table.Columns.Count;j++)
+                    {
+                        workSheet.Cells[i + 2, j + 1] = table.Rows[i][j];
+                    }
+                }
+                
+                workSheet.SaveAs(saveFilePath);
+                excelApp.Worksheets.Add();
+
             }
+
+            excelApp.Quit();
         }
 
         

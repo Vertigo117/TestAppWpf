@@ -27,9 +27,9 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label VerticalAlignment="Center" HorizontalAlignment="Center">С</Label>
-            <Calendar x:Name="dateFromCalendar" Grid.Column="1" VerticalAlignment="Center"></Calendar>
+            <Calendar SelectedDate="{Binding DateFrom}" x:Name="dateFromCalendar" Grid.Column="1" VerticalAlignment="Center"></Calendar>
             <Label Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">По</Label>
-            <Calendar x:Name="dateToCalendar" Grid.Column="3" VerticalAlignment="Center"></Calendar>
+            <Calendar SelectedDate="{Binding DateTo}" x:Name="dateToCalendar" Grid.Column="3" VerticalAlignment="Center"></Calendar>
         </Grid>
         <GroupBox Grid.Row="3" Grid.ColumnSpan="2" Header="Параметры">
             <StackPanel VerticalAlignment="Stretch">
@@ -37,7 +37,7 @@
                 <CheckBox>Отчёт по количеству подключений с IP адреса</CheckBox>
                 <CheckBox>Отчёт по организациям (за весь период)</CheckBox>
                 <CheckBox>Отчёт по пользователям от организации</CheckBox>
-                <CheckBox>Отчёт по ошибкам за период</CheckBox>
+                <CheckBox IsChecked="{Binding CheckBoxPeriodState}">Отчёт по ошибкам за период</CheckBox>
             </StackPanel>
         </GroupBox>
     </Grid>

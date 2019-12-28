@@ -24,12 +24,45 @@ namespace TestAppWpf.ViewModel
         private string ipPattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)$";
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
         public ObservableCollection<User> Users { get;}
+        Dictionary<IEnumerable<User>, string> filteredUsers;
         private Command openExportWindowCommand;
         private Command saveFileCommand;
         private bool calendarVisible;
         private bool state;
-        private bool checkBoxDayState;
+        private bool checkBoxPeriodState;
+        private DateTime dateFrom;
+        private DateTime dateTo;
         SaveFileDialog dialog;
+
+        public DateTime DateFrom
+        {
+            get { return dateFrom; }
+            set
+            {
+                dateFrom = value;
+                OnPropertyChanged("DateFrom");
+            }
+        }
+
+        public DateTime DateTo
+        {
+            get { return dateTo; }
+            set
+            {
+                dateTo = value;
+                OnPropertyChanged("DateTo");
+            }
+        }
+
+        public bool CheckBoxPeriodState
+        {
+            get { return checkBoxPeriodState; }
+            set
+            {
+                checkBoxPeriodState = value;
+                OnPropertyChanged("CheckBoxPeriodState");
+            }
+        }
         
 
         public Command SaveFileCommand
@@ -43,14 +76,14 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xls|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            try
-                            {
+                            //try
+                            //{
                                 FileSave();
-                            }
-                            catch(Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
+                            //}
+                            //catch(Exception ex)
+                            //{
+                            //    MessageBox.Show(ex.Message);
+                            //}
                         }
                     }));
             }
@@ -159,9 +192,17 @@ namespace TestAppWpf.ViewModel
 
         private void FileSave()
         {
+            filteredUsers = new Dictionary<IEnumerable<User>, string>();
+
+            if(checkBoxPeriodState)
+            {
+                var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo);
+                filteredUsers.Add(filteredByPeriod, "Отчёт по ошибкам за период");
+            }
+
             if (dialog.FilterIndex==1)
             {
-                Export.AsXls(Users, dialog.FileName);
+                Export.AsXls(filteredUsers, dialog.FileName);
             }
             
             if(dialog.FilterIndex==2)
