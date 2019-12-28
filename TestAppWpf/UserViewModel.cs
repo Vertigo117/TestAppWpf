@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.UI;
 using System.Windows;
 using System.Windows.Input;
 using TestAppWpf.Properties;
@@ -25,7 +26,6 @@ namespace TestAppWpf.ViewModel
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
         public ObservableCollection<User> Users { get;}
         private Command openExportWindowCommand;
-        private Command showExplorerCommand;
         private Command saveFileCommand;
         private bool calendarVisible;
         private bool state;
@@ -40,45 +40,13 @@ namespace TestAppWpf.ViewModel
                 return saveFileCommand ??
                     (saveFileCommand = new Command(s =>
                     {
-                        try
-                        {
-                            FileSave();
-                            MessageBox.Show("Данные успешно сохранены.");
-                        }
-                        catch(Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                    }));
-            }
-        }
-
-        public string SaveFilePath
-        {
-            get 
-            { 
-                return saveFilePath; 
-            }
-            set
-            {
-                saveFilePath = value;
-                OnPropertyChanged("SaveFilePath");
-            }
-        }
-
-        public Command ShowExplorerCommand
-        {
-            get
-            {
-                return showExplorerCommand ??
-                    (showExplorerCommand = new Command(s =>
-                    {
                         dialog = new SaveFileDialog();
                         dialog.Filter = "Excel Worksheets|*.xls|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
                             saveFilePath = Path.GetFullPath(dialog.FileName);
-                            OnPropertyChanged("SaveFilePath");
+                            FileSave();
+                            MessageBox.Show("Файл успешно сохранён");
                         }
                     }));
             }
@@ -187,10 +155,21 @@ namespace TestAppWpf.ViewModel
 
         private void FileSave()
         {
-            if(checkBoxDayState)
+            if (dialog.FilterIndex==1)
             {
-                //var filter = Users.Where(u=>u.LoginTime)
-                Export.AsXml(Users, SaveFilePath);
+                System.Web.UI.WebControls.DataGrid grid = new System.Web.UI.WebControls.DataGrid();
+                grid.HeaderStyle.Font.Bold = true;
+                grid.DataSource = Export.ConvertToDataTable(Users);
+
+                grid.DataBind();
+
+                using (StreamWriter sw = new StreamWriter(saveFilePath))
+                {
+                    using (HtmlTextWriter hw = new HtmlTextWriter(sw))
+                    {
+                        grid.RenderControl(hw);
+                    }
+                }
             }
         }
 

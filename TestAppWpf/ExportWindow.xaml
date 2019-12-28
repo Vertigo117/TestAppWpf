@@ -8,7 +8,6 @@
         Title="Вывод отчётов" Height="450" Width="600" Background="Gainsboro">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="4*"/>
             <RowDefinition Height="2*"/>
@@ -18,11 +17,9 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Label VerticalAlignment="Center" HorizontalAlignment="Center">Сохранить отчёт</Label>
-        <TextBox Text="{Binding SaveFilePath}" VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="filePathButton" Grid.Column="1"></TextBox>
-        <Button Command="{Binding ShowExplorerCommand}" Background="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="100" x:Name="showExplorerButton" Grid.Column="2">Обзор</Button>
-        <CheckBox IsChecked="{Binding VisibilityCheckboxState}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" x:Name="showCalendarCheckBox">За период</CheckBox>
-        <Grid Visibility="{Binding Path=CalendarVisibility}" Background="WhiteSmoke" Grid.Row="2" Grid.ColumnSpan="3">
+        <Button Command="{Binding SaveFileCommand}" Background="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="100" x:Name="showExplorerButton" Grid.Column="2" Grid.Row="2">Сохранить как</Button>
+        <CheckBox IsChecked="{Binding VisibilityCheckboxState}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" x:Name="showCalendarCheckBox">За период</CheckBox>
+        <Grid Visibility="{Binding Path=CalendarVisibility}" Background="WhiteSmoke" Grid.Row="1" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.2*"/>
                 <ColumnDefinition Width="*"/>
@@ -43,6 +40,5 @@
                 <CheckBox>Отчёт по ошибкам за период</CheckBox>
             </StackPanel>
         </GroupBox>
-        <Button Command="{Binding SaveFileCommand}" Background="WhiteSmoke" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">Сформировать отчёт</Button>
     </Grid>
 </Window>
