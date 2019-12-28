@@ -65,6 +65,8 @@ namespace TestAppWpf
             Application excelApp = new Application();
             excelApp.Workbooks.Add();
 
+            int counter = 0;
+
             foreach (KeyValuePair<IEnumerable<User>,string> u in usersList)
             {
                 System.Data.DataTable table = ConvertToDataTable(u.Key);
@@ -85,7 +87,13 @@ namespace TestAppWpf
                 }
                 
                 workSheet.SaveAs(saveFilePath);
-                excelApp.Worksheets.Add();
+                counter++;
+
+                if(counter<usersList.Count)
+                {
+                    excelApp.Worksheets.Add();
+                }
+                
 
             }
 
