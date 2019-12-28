@@ -21,7 +21,6 @@ namespace TestAppWpf.ViewModel
     {
         private string path = @"..\..\TXT\LOG.txt";
         private string errorPath = @"..\..\TXT\ERROR.txt";
-        private string saveFilePath;
         private string ipPattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)$";
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
         public ObservableCollection<User> Users { get;}
@@ -44,9 +43,7 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xls|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            saveFilePath = Path.GetFullPath(dialog.FileName);
                             FileSave();
-                            MessageBox.Show("Файл успешно сохранён");
                         }
                     }));
             }
@@ -157,19 +154,7 @@ namespace TestAppWpf.ViewModel
         {
             if (dialog.FilterIndex==1)
             {
-                System.Web.UI.WebControls.DataGrid grid = new System.Web.UI.WebControls.DataGrid();
-                grid.HeaderStyle.Font.Bold = true;
-                grid.DataSource = Export.ConvertToDataTable(Users);
-
-                grid.DataBind();
-
-                using (StreamWriter sw = new StreamWriter(saveFilePath))
-                {
-                    using (HtmlTextWriter hw = new HtmlTextWriter(sw))
-                    {
-                        grid.RenderControl(hw);
-                    }
-                }
+                Export.AsXls(Users, dialog.FileName);
             }
         }
 

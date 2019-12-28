@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI;
 using System.Xml.Serialization;
 using Microsoft.Office.Interop.Excel;
 
@@ -28,7 +29,7 @@ namespace TestAppWpf
             }
         }
 
-        public static System.Data.DataTable ConvertToDataTable<T>(ObservableCollection<T> users)
+        private static System.Data.DataTable ConvertToDataTable<T>(ObservableCollection<T> users)
 
         {
             PropertyDescriptorCollection properties =
@@ -57,6 +58,23 @@ namespace TestAppWpf
 
             return table;
 
+        }
+
+        public static void AsXls<T>(ObservableCollection<T> users, string saveFilePath)
+        {
+            System.Web.UI.WebControls.DataGrid grid = new System.Web.UI.WebControls.DataGrid();
+            grid.HeaderStyle.Font.Bold = true;
+            grid.DataSource = ConvertToDataTable(users);
+
+            grid.DataBind();
+
+            using (StreamWriter sw = new StreamWriter(saveFilePath))
+            {
+                using (HtmlTextWriter hw = new HtmlTextWriter(sw))
+                {
+                    grid.RenderControl(hw);
+                }
+            }
         }
 
         
