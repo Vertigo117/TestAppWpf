@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,27 +9,122 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using TestAppWpf.Properties;
+
 
 namespace TestAppWpf.ViewModel
 {
-    class UserViewModel
+    class UserViewModel : INotifyPropertyChanged
     {
         private string path = @"..\..\TXT\LOG.txt";
         private string errorPath = @"..\..\TXT\ERROR.txt";
+        private string saveFilePath;
         private string ipPattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)$";
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
-        public ObservableCollection<User> Users { get; set; }
+        public ObservableCollection<User> Users { get;}
+        private Command openExportWindowCommand;
+        private Command showExplorerCommand;
+        private Command saveFileCommand;
+        private bool calendarVisible;
+        private bool state;
+        private bool checkBoxDayState;
+        SaveFileDialog dialog;
+        
+
+        public Command SaveFileCommand
+        {
+            get
+            {
+                return saveFileCommand ??
+                    (saveFileCommand = new Command(s =>
+                    {
+                        try
+                        {
+                            FileSave();
+                            MessageBox.Show("Данные успешно сохранены.");
+                        }
+                        catch(Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    }));
+            }
+        }
+
+        public string SaveFilePath
+        {
+            get 
+            { 
+                return saveFilePath; 
+            }
+            set
+            {
+                saveFilePath = value;
+                OnPropertyChanged("SaveFilePath");
+            }
+        }
+
+        public Command ShowExplorerCommand
+        {
+            get
+            {
+                return showExplorerCommand ??
+                    (showExplorerCommand = new Command(s =>
+                    {
+                        dialog = new SaveFileDialog();
+                        dialog.Filter = "Excel Worksheets|*.xls|XML Files|*.xml";
+                        if (dialog.ShowDialog()==true)
+                        {
+                            saveFilePath = Path.GetFullPath(dialog.FileName);
+                            OnPropertyChanged("SaveFilePath");
+                        }
+                    }));
+            }
+        }
+
+        public Visibility CalendarVisibility
+        {
+            get { return calendarVisible ? Visibility.Visible : Visibility.Hidden; }
+        }
+
+        public bool VisibilityCheckboxState
+        {
+            get { return state; }
+            set
+            {
+                state = value;
+                calendarVisible = value;
+                OnPropertyChanged("VisibilityCheckboxState");
+                OnPropertyChanged("CalendarVisibility");
+            }
+        }
+
+
+        public Command OpenExportWindowCommand
+        {
+            get 
+            {
+                return openExportWindowCommand ??
+                    (openExportWindowCommand = new Command(o => { ExportWindow exportWindow = new ExportWindow(); exportWindow.ShowDialog(); })) ;
+            }
+        }
+
+
 
         public UserViewModel()
         {
+            calendarVisible = false;
             Users = new ObservableCollection<User>();
             File.WriteAllText(errorPath, string.Empty);
             ParseLOG();
-
+            
         }
 
+
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        public void OnPropertyChanged(string prop)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
@@ -86,6 +182,15 @@ namespace TestAppWpf.ViewModel
             using (StreamWriter sw = new StreamWriter(errorPath, true, Encoding.Default))
             {
                 await sw.WriteLineAsync(line);
+            }
+        }
+
+        private void FileSave()
+        {
+            if(checkBoxDayState)
+            {
+                //var filter = Users.Where(u=>u.LoginTime)
+                Export.AsXml(Users, SaveFilePath);
             }
         }
 

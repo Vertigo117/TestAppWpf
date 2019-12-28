@@ -1,0 +1,48 @@
+﻿<Window x:Class="TestAppWpf.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestAppWpf"
+        mc:Ignorable="d"
+        Title="Вывод отчётов" Height="450" Width="600" Background="Gainsboro">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label VerticalAlignment="Center" HorizontalAlignment="Center">Сохранить отчёт</Label>
+        <TextBox Text="{Binding SaveFilePath}" VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="filePathButton" Grid.Column="1"></TextBox>
+        <Button Command="{Binding ShowExplorerCommand}" Background="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="100" x:Name="showExplorerButton" Grid.Column="2">Обзор</Button>
+        <CheckBox IsChecked="{Binding VisibilityCheckboxState}" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" x:Name="showCalendarCheckBox">За период</CheckBox>
+        <Grid Visibility="{Binding Path=CalendarVisibility}" Background="WhiteSmoke" Grid.Row="2" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.2*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label VerticalAlignment="Center" HorizontalAlignment="Center">С</Label>
+            <Calendar x:Name="dateFromCalendar" Grid.Column="1" VerticalAlignment="Center"></Calendar>
+            <Label Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">По</Label>
+            <Calendar x:Name="dateToCalendar" Grid.Column="3" VerticalAlignment="Center"></Calendar>
+        </Grid>
+        <GroupBox Grid.Row="3" Grid.ColumnSpan="2" Header="Параметры">
+            <StackPanel VerticalAlignment="Stretch">
+                <CheckBox>Отчёт по пользователям за сутки</CheckBox>
+                <CheckBox>Отчёт по количеству подключений с IP адреса</CheckBox>
+                <CheckBox>Отчёт по организациям (за весь период)</CheckBox>
+                <CheckBox>Отчёт по пользователям от организации</CheckBox>
+                <CheckBox>Отчёт по ошибкам за период</CheckBox>
+            </StackPanel>
+        </GroupBox>
+        <Button Command="{Binding SaveFileCommand}" Background="WhiteSmoke" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">Сформировать отчёт</Button>
+    </Grid>
+</Window>

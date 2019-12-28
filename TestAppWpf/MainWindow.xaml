@@ -30,10 +30,11 @@
                 <DataGridTextColumn Header="Код завершения сессии" Binding="{Binding EndCode}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Menu>
-            <MenuItem Header="File">
-                <MenuItem Header="Сформировать отчёт"/>
-            </MenuItem>
-        </Menu>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Width="200" Margin="2" Command="{Binding OpenExportWindowCommand}">Экспорт отчётов</Button>
+        </StackPanel>
+        
+        
     </Grid>
 </Window>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TestAppWpf
 {
-    class User : INotifyPropertyChanged
+    public class User : INotifyPropertyChanged
     {
         private int index;
         private string userName;
