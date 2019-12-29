@@ -8,25 +8,20 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI;
 using System.Xml.Serialization;
 using Microsoft.Office.Interop.Excel;
 
 
 namespace TestAppWpf
 {
-    class Export
+    static class Export
     {
-        private Application excelApp;
-        private Range excelCellrange;
         
 
-        public Export()
-        {
-            excelApp = new Application();
-        }
 
 
-        public static void AsXml (ArrayList users, string saveFilePath)
+        public static void AsXml<T> (ArrayList users, string saveFilePath)
         {
             XmlSerializer xs = new XmlSerializer(typeof(ArrayList));
             using (StreamWriter wr = new StreamWriter(saveFilePath))
@@ -39,7 +34,7 @@ namespace TestAppWpf
 
         {
             PropertyDescriptorCollection properties =
-            TypeDescriptor.GetProperties(typeof(T));
+            TypeDescriptor.GetProperties(typeof(object));
             System.Data.DataTable table = new System.Data.DataTable();
 
             foreach (PropertyDescriptor prop in properties)
@@ -66,19 +61,21 @@ namespace TestAppWpf
 
         }
 
-        public void AsXls<T>(IEnumerable<T> usersList, string saveFilePath)
+        public static void AsXls<T>(ArrayList usersList, string saveFilePath)
         {
-
+            Application excelApp = new Application();
+            Range excelCellrange;
             excelApp.Workbooks.Add();
 
+            
 
             int counter = 0;
 
-            foreach (KeyValuePair<IEnumerable<T>,string> u in usersList)
+            foreach (IEnumerable<T> u in usersList)
             {
-                System.Data.DataTable table = ConvertToDataTable(u.Key);
+                System.Data.DataTable table = ConvertToDataTable(u);
                 Worksheet workSheet = excelApp.ActiveSheet;
-                workSheet.Name = u.Value;
+                //workSheet.Name = u.Value;
 
                 for(int i=0; i < table.Columns.Count; i++)
                 {
