@@ -8,126 +8,23 @@ using System.Threading.Tasks;
 
 namespace TestAppWpf
 {
-    public class User : INotifyPropertyChanged
+    public class User
     {
-        private int index;
-        private string userName;
-        private string organization;
-        private string ip;
-        private string sessionId;
-        private DateTime loginTime;
-        private DateTime logoutTime;
-        private byte endCode;
+        public int Index { get; set; }
 
-        public int Index { get 
-            { 
-                return index; 
-            } 
-            set 
-            {
-                index = value;
-                OnPropertyChanged("NumOrder"); 
-            } 
-        }
+        public string UserName { get; set; }
 
-        public string UserName
-        {
-            get
-            {
-                return userName;
-            }
-            set
-            {
-                userName = value;
-                OnPropertyChanged("UserName");
-            }
-        }
+        public string Organization { get; set; }
 
-        public string Organization
-        {
-            get
-            {
-                return organization;
-            }
-            set
-            {
-                organization = value;
-                OnPropertyChanged("Organization");
-            }
-        }
+        public string Ip { get; set; }
 
-        public string Ip
-        {
-            get
-            {
-                return ip;
-            }
-            set
-            {
-                ip = value;
-                OnPropertyChanged("Ip");
-            }
-        }
+        public string SessionId { get; set; }
 
-        public string SessionId
-        {
-            get
-            {
-                return sessionId;
-            }
-            set
-            {
-                sessionId = value;
-                OnPropertyChanged("Id");
-            }
-        }
+        public DateTime LoginTime { get; set; }
 
-        public DateTime LoginTime
-        {
-            get
-            {
-                return loginTime;
-            }
-            set
-            {
-                loginTime = value;
-                OnPropertyChanged("LoginTime");
-            }
-        }
+        public DateTime LogoutTime { get; set; }
 
-        public DateTime LogoutTime
-        {
-            get
-            {
-                return logoutTime;
-            }
-            set
-            {
-                logoutTime = value;
-                OnPropertyChanged("LogoutTime");
-            }
-        }
+        public byte EndCode { get; set; }
 
-        public byte EndCode 
-        { 
-            get
-            {
-                return endCode;
-            }
-
-            set
-            {
-                endCode = value;
-                OnPropertyChanged("EndCode");
-            }
-        }
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop="")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
     }
 }

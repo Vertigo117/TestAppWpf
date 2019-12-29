@@ -20,7 +20,7 @@ namespace TestAppWpf
 
 
 
-        public static void AsXml<T> (ObservableCollection<T> users, string saveFilePath)
+        public static void AsXml<T> (List<T> users, string saveFilePath)
         {
             XmlSerializer xs = new XmlSerializer(typeof(ObservableCollection<User>));
             using (StreamWriter wr = new StreamWriter(saveFilePath))
@@ -60,7 +60,7 @@ namespace TestAppWpf
 
         }
 
-        public static void AsXls(Dictionary<IEnumerable<User>, string> usersList, string saveFilePath)
+        public static void AsXls<T>(Dictionary<IEnumerable<T>, string> usersList, string saveFilePath)
         {
             Application excelApp = new Application();
             Range excelCellrange;
@@ -70,7 +70,7 @@ namespace TestAppWpf
 
             int counter = 0;
 
-            foreach (KeyValuePair<IEnumerable<User>,string> u in usersList)
+            foreach (KeyValuePair<IEnumerable<T>,string> u in usersList)
             {
                 System.Data.DataTable table = ConvertToDataTable(u.Key);
                 Worksheet workSheet = excelApp.ActiveSheet;
@@ -89,6 +89,7 @@ namespace TestAppWpf
                     }
                 }
 
+                //TODO Проверить на пустоту, иногда критует
                 excelCellrange = workSheet.Range[workSheet.Cells[1, 1], workSheet.Cells[table.Rows.Count, table.Columns.Count]];
                 excelCellrange.EntireColumn.AutoFit();
                 workSheet.SaveAs(saveFilePath);

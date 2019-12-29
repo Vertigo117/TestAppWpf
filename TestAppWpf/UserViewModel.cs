@@ -23,13 +23,13 @@ namespace TestAppWpf.ViewModel
         private string errorPath = @"..\..\TXT\ERROR.txt";
         private string ipPattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)$";
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
-        public ObservableCollection<User> Users { get;}
-        Dictionary<IEnumerable<User>, string> filteredUsers;
+        public List<User> Users { get;}
         private Command openExportWindowCommand;
         private Command saveFileCommand;
         private bool calendarVisible;
         private bool state;
         private bool checkBoxPeriodState;
+        private bool checkBoxUsersFromOrganizations;
         private DateTime dateFrom;
         private DateTime dateTo;
         SaveFileDialog dialog;
@@ -51,6 +51,16 @@ namespace TestAppWpf.ViewModel
             {
                 dateTo = value;
                 OnPropertyChanged("DateTo");
+            }
+        }
+
+        public bool CheckBoxUsersFromOrganizations
+        {
+            get { return checkBoxUsersFromOrganizations; }
+            set
+            {
+                checkBoxUsersFromOrganizations = value;
+                OnPropertyChanged("CheckBoxUsersFromOrganizations");
             }
         }
 
@@ -121,7 +131,7 @@ namespace TestAppWpf.ViewModel
         public UserViewModel()
         {
             calendarVisible = false;
-            Users = new ObservableCollection<User>();
+            Users = new List<User>();
             File.WriteAllText(errorPath, string.Empty);
             ParseLOG();
             
@@ -192,12 +202,20 @@ namespace TestAppWpf.ViewModel
 
         private void FileSave()
         {
+            Dictionary<IEnumerable<User>, string> filteredUsers;
             filteredUsers = new Dictionary<IEnumerable<User>, string>();
 
             if(checkBoxPeriodState)
             {
-                var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo);
+                var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo && u.EndCode==1);
                 filteredUsers.Add(filteredByPeriod, "Отчёт по ошибкам за период");
+            }
+
+            if(checkBoxUsersFromOrganizations)
+            {
+                var usersFromOrganizations = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(i => i.Organization).Select(o => new { type = o.Key, count = o.Count() });
+                //var usersFromOrganizations = from u in Users group u by u.Organization into grouped select new {type = grouped.Key, }
+
             }
 
             if (dialog.FilterIndex==1)
