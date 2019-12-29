@@ -20,7 +20,7 @@ namespace TestAppWpf
 
 
 
-        public static void AsXml<T> (List<T> users, string saveFilePath)
+        public static void AsXml<T> (ObservableCollection<T> users, string saveFilePath)
         {
             XmlSerializer xs = new XmlSerializer(typeof(ObservableCollection<User>));
             using (StreamWriter wr = new StreamWriter(saveFilePath))

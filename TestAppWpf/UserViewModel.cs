@@ -23,7 +23,7 @@ namespace TestAppWpf.ViewModel
         private string errorPath = @"..\..\TXT\ERROR.txt";
         private string ipPattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)$";
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
-        public List<User> Users { get;}
+        public ObservableCollection<User> Users { get;}
         private Command openExportWindowCommand;
         private Command saveFileCommand;
         private bool calendarVisible;
@@ -131,7 +131,7 @@ namespace TestAppWpf.ViewModel
         public UserViewModel()
         {
             calendarVisible = false;
-            Users = new List<User>();
+            Users = new ObservableCollection<User>();
             File.WriteAllText(errorPath, string.Empty);
             ParseLOG();
             
@@ -168,7 +168,8 @@ namespace TestAppWpf.ViewModel
                             Ip = values[3],
                             SessionId = values[4],
                             LoginTime = Convert.ToDateTime(values[5]),
-                            LogoutTime = Convert.ToDateTime(values[6])
+                            LogoutTime = Convert.ToDateTime(values[6]),
+                            EndCode = Convert.ToInt32(values[7])
                         };
 
                         if (RegexCheck(user))
