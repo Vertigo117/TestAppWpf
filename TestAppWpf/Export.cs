@@ -63,7 +63,10 @@ namespace TestAppWpf
         public static void AsXls(Dictionary<IEnumerable<User>, string> usersList, string saveFilePath)
         {
             Application excelApp = new Application();
+            Range excelCellrange;
             excelApp.Workbooks.Add();
+
+            
 
             int counter = 0;
 
@@ -85,7 +88,9 @@ namespace TestAppWpf
                         workSheet.Cells[i + 2, j + 1] = table.Rows[i][j];
                     }
                 }
-                
+
+                excelCellrange = workSheet.Range[workSheet.Cells[1, 1], workSheet.Cells[table.Rows.Count, table.Columns.Count]];
+                excelCellrange.EntireColumn.AutoFit();
                 workSheet.SaveAs(saveFilePath);
                 counter++;
 
