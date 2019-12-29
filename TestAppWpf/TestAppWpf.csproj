@@ -61,7 +61,6 @@
     <Compile Include="ExportWindow.xaml.cs">
       <DependentUpon>ExportWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Organization.cs" />
     <Compile Include="UserModel.cs" />
     <Compile Include="UserViewModel.cs" />
     <Page Include="ExportWindow.xaml">

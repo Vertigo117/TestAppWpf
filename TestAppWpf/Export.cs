@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,22 +8,27 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.UI;
 using System.Xml.Serialization;
 using Microsoft.Office.Interop.Excel;
 
 
 namespace TestAppWpf
 {
-    static class Export
+    class Export
     {
+        private Application excelApp;
+        private Range excelCellrange;
         
 
-
-
-        public static void AsXml<T> (ObservableCollection<T> users, string saveFilePath)
+        public Export()
         {
-            XmlSerializer xs = new XmlSerializer(typeof(ObservableCollection<User>));
+            excelApp = new Application();
+        }
+
+
+        public static void AsXml (ArrayList users, string saveFilePath)
+        {
+            XmlSerializer xs = new XmlSerializer(typeof(ArrayList));
             using (StreamWriter wr = new StreamWriter(saveFilePath))
             {
                 xs.Serialize(wr, users);
@@ -60,13 +66,11 @@ namespace TestAppWpf
 
         }
 
-        public static void AsXls<T>(Dictionary<IEnumerable<T>, string> usersList, string saveFilePath)
+        public void AsXls<T>(IEnumerable<T> usersList, string saveFilePath)
         {
-            Application excelApp = new Application();
-            Range excelCellrange;
+
             excelApp.Workbooks.Add();
 
-            
 
             int counter = 0;
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -203,25 +204,27 @@ namespace TestAppWpf.ViewModel
 
         private void FileSave()
         {
-            Dictionary<IEnumerable<User>, string> filteredUsers;
-            filteredUsers = new Dictionary<IEnumerable<User>, string>();
+            ArrayList filteredUsers = new ArrayList();
+            
 
             if(checkBoxPeriodState)
             {
                 var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo && u.EndCode==1);
-                filteredUsers.Add(filteredByPeriod, "Отчёт по ошибкам за период");
+                Dictionary<IEnumerable<User>, string> dict = new Dictionary<IEnumerable<User>, string>();
+                dict.Add(filteredByPeriod, "Отчёт по ошибкам за период");
+                filteredUsers.AddRange(dict);
             }
 
             if(checkBoxUsersFromOrganizations)
             {
                 var usersFromOrganizations = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(i => i.Organization).Select(o => new { type = o.Key, count = o.Count() });
-                //var usersFromOrganizations = from u in Users group u by u.Organization into grouped select new {type = grouped.Key, }
+                
 
             }
 
             if (dialog.FilterIndex==1)
             {
-                Export.AsXls(filteredUsers, dialog.FileName);
+                Export.AsXls<>(filteredUsers, dialog.FileName);
             }
             
             if(dialog.FilterIndex==2)
