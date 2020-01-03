@@ -210,18 +210,20 @@ namespace TestAppWpf.ViewModel
             if(checkBoxPeriodState)
             {
                 var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo && u.EndCode==1);
-                filteredUsers.Add(filteredByPeriod);
+                Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { filteredByPeriod, "Ошибки за период" } };
+                filteredUsers.Add(keyValuePairs);
             }
 
-            if(checkBoxUsersFromOrganizations)
+            if (checkBoxUsersFromOrganizations)
             {
                 var usersFromOrganizations = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(i => i.Organization).Select(o => new { Organization = o.Key, NumberOfUsers = o.Count() });
-                filteredUsers.Add(usersFromOrganizations);
+                Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { usersFromOrganizations, "Пользователи от организации" } };
+                filteredUsers.Add(keyValuePairs);
             }
 
             if (dialog.FilterIndex==1)
             {
-                Export.AsXls<dynamic>(filteredUsers, dialog.FileName);
+                Export.AsXls<object>(filteredUsers, dialog.FileName);
             }
             
             //if(dialog.FilterIndex==2)

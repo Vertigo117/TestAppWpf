@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI;
@@ -30,80 +31,60 @@ namespace TestAppWpf
             }
         }
 
-        private static System.Data.DataTable ConvertToDataTable<T>(IEnumerable<T> users)
-
-        {
-            PropertyDescriptorCollection properties =
-            TypeDescriptor.GetProperties(typeof(object));
-            System.Data.DataTable table = new System.Data.DataTable();
-
-            foreach (PropertyDescriptor prop in properties)
-            {
-                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
-            }
-                
-            foreach (T item in users)
-
-            {
-
-                DataRow row = table.NewRow();
-
-                foreach (PropertyDescriptor prop in properties)
-                {
-                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-                }
-                    
-                table.Rows.Add(row);
-
-            }
-
-            return table;
-
-        }
+        
 
         public static void AsXls<T>(ArrayList usersList, string saveFilePath)
         {
             Application excelApp = new Application();
             Range excelCellrange;
             excelApp.Workbooks.Add();
+            Worksheet workSheet = excelApp.ActiveSheet;
 
-            
 
             int counter = 0;
 
-            foreach (IEnumerable<T> u in usersList)
+            foreach (IDictionary<IEnumerable<T>,string> u in usersList)
             {
-                System.Data.DataTable table = ConvertToDataTable(u);
-                Worksheet workSheet = excelApp.ActiveSheet;
-                //workSheet.Name = u.Value;
+                
 
-                for(int i=0; i < table.Columns.Count; i++)
+                foreach (KeyValuePair<IEnumerable<T>,string> pair in u)
                 {
-                    workSheet.Cells[1, i + 1] = table.Columns[i].ColumnName;
-                }
+                    workSheet = excelApp.ActiveSheet;
+                    workSheet.Name = pair.Value;
+                    Type t = pair.Key.First().GetType();
+                    PropertyInfo[] properties = t.GetProperties();
 
-                for(int i=0;i < table.Rows.Count;i++)
-                {
-                    for(int j=0; j < table.Columns.Count;j++)
+
+                    for (int i = 0; i < properties.Length; i++)
                     {
-                        workSheet.Cells[i + 2, j + 1] = table.Rows[i][j];
+                        workSheet.Cells[1, i + 1] = properties[i].Name;
+                    }
+
+                    for(int i = 0; i < pair.Key.Count(); i++)
+                    {
+                        for(int j =0;j<properties.Length;j++)
+                        {
+                            workSheet.Cells[i + 2, j + 1] = properties[j].GetValue(pair.Key.ElementAt(i));
+                        }
+                    }
+                        
+
+                    //TODO Проверить на пустоту, иногда критует
+                    excelCellrange = workSheet.Range[workSheet.Cells[1, 1], workSheet.Cells[pair.Key.Count(), pair.Key.First().GetType().GetProperties().Length]];
+                    excelCellrange.EntireColumn.AutoFit();
+                    counter++;
+
+                    if (counter < usersList.Count)
+                    {
+                        excelApp.Worksheets.Add();
                     }
                 }
 
-                //TODO Проверить на пустоту, иногда критует
-                excelCellrange = workSheet.Range[workSheet.Cells[1, 1], workSheet.Cells[table.Rows.Count, table.Columns.Count]];
-                excelCellrange.EntireColumn.AutoFit();
-                workSheet.SaveAs(saveFilePath);
-                counter++;
-
-                if(counter<usersList.Count)
-                {
-                    excelApp.Worksheets.Add();
-                }
-                
 
             }
 
+
+            workSheet.SaveAs(saveFilePath);
             excelApp.Quit();
         }
 
