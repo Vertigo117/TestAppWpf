@@ -33,8 +33,8 @@
         </Grid>
         <GroupBox Grid.Row="3" Grid.ColumnSpan="2" Header="Параметры">
             <StackPanel VerticalAlignment="Stretch">
-                <CheckBox>Отчёт по пользователям за сутки</CheckBox>
-                <CheckBox>Отчёт по количеству подключений с IP адреса</CheckBox>
+                <CheckBox IsChecked="{Binding CheckBox24h}">Отчёт по пользователям за сутки</CheckBox>
+                <CheckBox IsChecked="{Binding CheckBoxConnections}">Отчёт по количеству подключений с IP адреса</CheckBox>
                 <CheckBox IsChecked="{Binding CheckBoxOrgs}">Отчёт по организациям (за весь период)</CheckBox>
                 <CheckBox IsChecked="{Binding CheckBoxUsersFromOrganizations}">Отчёт по пользователям от организации</CheckBox>
                 <CheckBox IsChecked="{Binding CheckBoxPeriodState}">Отчёт по ошибкам за период</CheckBox>

@@ -32,9 +32,37 @@ namespace TestAppWpf.ViewModel
         private bool checkBoxPeriodState;
         private bool checkBoxUsersFromOrganizations;
         private bool checkBoxOrgs;
+        private bool checkBoxConnections;
+        private bool checkBox24h;
         private DateTime dateFrom;
         private DateTime dateTo;
         SaveFileDialog dialog;
+
+        public bool CheckBox24h 
+        { 
+            get
+            {
+                return checkBox24h;
+            }
+            set
+            {
+                checkBox24h = value;
+                OnPropertyChanged("CheckBox24h");
+            }
+        }
+
+        public bool CheckBoxConnections 
+        { 
+            get
+            {
+                return checkBoxConnections;
+            }
+            set
+            {
+                checkBoxConnections = value;
+                OnPropertyChanged("CheckBoxConnections");
+            }
+        }
 
         public bool CheckBoxOrgs
         {
@@ -98,14 +126,14 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xlsx|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            //try
-                            //{
+                            try
+                            {
                                 FileSave();
-                            //}
-                            //catch(Exception ex)
-                            //{
-                            //    MessageBox.Show(ex.Message);
-                            //}
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
                         }
                     }));
             }
@@ -236,6 +264,20 @@ namespace TestAppWpf.ViewModel
             {
                 var orgs = Users.Select(s => new { s.UserName, s.Ip, TimeSubtr = (s.LogoutTime - s.LoginTime).TotalMinutes }).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new {Total = s.Count(), s.Key.UserName, s.Key.Ip, TimeOnline = s.Sum(sum => sum.TimeSubtr) });
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { orgs, "Отчёт по организациям" } };
+                filteredUsers.Add(keyValuePairs);
+            }
+
+            if(checkBoxConnections)
+            {
+                var connections = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new { s.Key.UserName, s.Key.Ip, NumberOfConnections = s.Count() });
+                Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { connections, "Количество подключений" } };
+                filteredUsers.Add(keyValuePairs);
+            }
+
+            if(CheckBox24h)
+            {
+                var day = Users.Where(d => DateTime.Now.Subtract(d.LoginTime).Days <= 1);
+                Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { day, "Отчёт за сутки" } };
                 filteredUsers.Add(keyValuePairs);
             }
 
