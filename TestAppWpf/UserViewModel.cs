@@ -126,14 +126,14 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xlsx|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            try
-                            {
-                                FileSave();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
+                            //try
+                            //{
+                            FileSave();
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    MessageBox.Show(ex.Message);
+                            //}
                         }
                     }));
             }
@@ -285,11 +285,11 @@ namespace TestAppWpf.ViewModel
             {
                 Export.AsXls<object>(filteredUsers, dialog.FileName);
             }
-            
-            //if(dialog.FilterIndex==2)
-            //{
-            //    Export.AsXml(Users, dialog.FileName);
-            //}
+
+            if (dialog.FilterIndex == 2)
+            {
+                Export.AsXml<object>(filteredUsers, dialog.FileName);
+            }
         }
 
     }

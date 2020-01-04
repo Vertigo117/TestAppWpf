@@ -22,12 +22,30 @@ namespace TestAppWpf
 
 
 
-        public static void AsXml<T> (ArrayList users, string saveFilePath)
+        public static void AsXml<T> (ArrayList usersList, string saveFilePath)
         {
-            XmlSerializer xs = new XmlSerializer(typeof(ArrayList));
-            using (StreamWriter wr = new StreamWriter(saveFilePath))
+            
+
+            int stringLengtgh = saveFilePath.Length - 4;
+            saveFilePath = saveFilePath.Substring(0, stringLengtgh);
+
+            foreach (IDictionary<IEnumerable<T>, string> dict in usersList)
             {
-                xs.Serialize(wr, users);
+                foreach(KeyValuePair<IEnumerable<T>,string> keyValuePair in dict)
+                {
+                    string filename = keyValuePair.Value;
+
+
+
+                    //foreach (T user in keyValuePair.Key)
+                    //{
+                        XmlSerializer xs = new XmlSerializer(typeof(List<T>));
+                        using (StreamWriter wr = new StreamWriter(string.Format("{0}_{1}.xml", saveFilePath, filename)))
+                        {
+                            xs.Serialize(wr, (List<T>)keyValuePair.Key.ToList());
+                        }
+                    //}
+                }
             }
         }
 
