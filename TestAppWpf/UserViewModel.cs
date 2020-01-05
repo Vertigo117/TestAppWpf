@@ -33,9 +33,54 @@ namespace TestAppWpf.ViewModel
         private string filterTextBoxName = "";
         private string filterTextBoxOrganization = "";
         private string filterTextBoxIp = "";
+        private string filterTextBoxId = "";
+        private DateTime filterDateFromPicker = DateTime.Parse("01.06.2017");
+        private DateTime filterDateToPicker = DateTime.Now;
         private DateTime dateFrom;
         private DateTime dateTo;
         SaveFileDialog dialog;
+
+        public DateTime FilterDateToPicker
+        {
+            get
+            {
+                return filterDateToPicker;
+            }
+            set
+            {
+                filterDateToPicker = value;
+                OnPropertyChanged("FilterDateToPicker");
+                DataGridSource.Refresh();
+            }
+        }
+
+        public DateTime FilterDateFromPicker
+        {
+            get
+            {
+                return filterDateFromPicker;
+            }
+            set
+            {
+                filterDateFromPicker = value;
+                OnPropertyChanged("FilterDateFromPicker");
+                DataGridSource.Refresh();
+            }
+        }
+
+        public string FilterTextBoxId
+        {
+            get
+            {
+                return filterTextBoxId;
+            }
+            set
+            {
+                filterTextBoxId = value;
+                OnPropertyChanged("FilterTextBoxId");
+                DataGridSource.Refresh();
+            }
+        }
 
         public string FilterTextBoxIp
         {
@@ -224,7 +269,10 @@ namespace TestAppWpf.ViewModel
             DataGridSource = CollectionViewSource.GetDefaultView(Users);
             DataGridSource.Filter = filter => 
             (filter as User).UserName.ToLower().Contains(filterTextBoxName.ToLower()) && (filter as User).Organization.ToLower().Contains(filterTextBoxOrganization.ToLower())
-            && (filter as User).Ip.ToLower().Contains(filterTextBoxIp.ToLower());
+            && (filter as User).Ip.ToLower().Contains(filterTextBoxIp.ToLower())
+            && (filter as User).SessionId.ToLower().Contains(filterTextBoxId.ToLower())
+            && (filter as User).LoginTime >= filterDateFromPicker
+            && (filter as User).LoginTime <= filterDateToPicker;
         }
 
 

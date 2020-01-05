@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestAppWpf"
         mc:Ignorable="d"
-        Title="Вывод отчётов" Height="450" Width="600" Background="Gainsboro">
+        Title="Вывод отчётов" Height="450" Width="600" Background="Gainsboro" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
