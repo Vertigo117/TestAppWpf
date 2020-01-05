@@ -24,27 +24,21 @@ namespace TestAppWpf
 
         public static void AsXml<T> (ArrayList usersList, string saveFilePath)
         {
-            
-
             int stringLengtgh = saveFilePath.Length - 4;
             saveFilePath = saveFilePath.Substring(0, stringLengtgh);
 
             foreach (IDictionary<IEnumerable<T>, string> dict in usersList)
             {
-                foreach(KeyValuePair<IEnumerable<T>,string> keyValuePair in dict)
+                foreach(KeyValuePair<IEnumerable<T>, string> keyValuePair in dict)
                 {
                     string filename = keyValuePair.Value;
+                    var users = keyValuePair.Key.ToList();
 
-
-
-                    //foreach (T user in keyValuePair.Key)
-                    //{
-                        XmlSerializer xs = new XmlSerializer(typeof(List<T>));
-                        using (StreamWriter wr = new StreamWriter(string.Format("{0}_{1}.xml", saveFilePath, filename)))
+                        XmlSerializer xmlSerializer = new XmlSerializer(users.GetType(), new Type[] { typeof(User), typeof(UserOrganization), typeof(UserTimeOnline), typeof(UserConnection)});
+                        using (StreamWriter writer = new StreamWriter(string.Format("{0}_{1}.xml", saveFilePath, filename)))
                         {
-                            xs.Serialize(wr, (List<T>)keyValuePair.Key.ToList());
+                            xmlSerializer.Serialize(writer, users);
                         }
-                    //}
                 }
             }
         }
@@ -87,7 +81,6 @@ namespace TestAppWpf
                     }
                         
 
-                    //TODO Проверить на пустоту, иногда критует
                     excelCellrange = workSheet.Range[workSheet.Cells[1, 1], workSheet.Cells[pair.Key.Count(), pair.Key.First().GetType().GetProperties().Length]];
                     excelCellrange.EntireColumn.AutoFit();
                     counter++;

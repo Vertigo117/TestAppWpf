@@ -250,35 +250,56 @@ namespace TestAppWpf.ViewModel
             {
                 var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo && u.EndCode==1);
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { filteredByPeriod, "Ошибки за период" } };
-                filteredUsers.Add(keyValuePairs);
+
+                if(filteredByPeriod != null)
+                {
+                    filteredUsers.Add(keyValuePairs);
+                }
+                
             }
 
             if (checkBoxUsersFromOrganizations)
             {
-                var usersFromOrganizations = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(i => i.Organization).Select(o => new { Organization = o.Key, NumberOfUsers = o.Count() });
+                var usersFromOrganizations = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(i => i.Organization).Select(o => new UserOrganization { OrganizationName = o.Key, NumberOfUsers = o.Count() });
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { usersFromOrganizations, "Пользователи от организации" } };
-                filteredUsers.Add(keyValuePairs);
+
+                if (usersFromOrganizations != null)
+                {
+                    filteredUsers.Add(keyValuePairs);
+                }
             }
 
             if(checkBoxOrgs)
             {
-                var orgs = Users.Select(s => new { s.UserName, s.Ip, TimeSubtr = (s.LogoutTime - s.LoginTime).TotalMinutes }).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new {Total = s.Count(), s.Key.UserName, s.Key.Ip, TimeOnline = s.Sum(sum => sum.TimeSubtr) });
+                var orgs = Users.Select(s => new { s.UserName, s.Ip, TimeSubtr = (s.LogoutTime - s.LoginTime).TotalMinutes }).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new UserTimeOnline { Total = s.Count(), UserName= s.Key.UserName, Ip= s.Key.Ip, TimeOnline = s.Sum(sum => sum.TimeSubtr) });
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { orgs, "Отчёт по организациям" } };
-                filteredUsers.Add(keyValuePairs);
+
+                if (orgs != null)
+                {
+                    filteredUsers.Add(keyValuePairs);
+                }
             }
 
             if(checkBoxConnections)
             {
-                var connections = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new { s.Key.UserName, s.Key.Ip, NumberOfConnections = s.Count() });
+                var connections = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new UserConnection { UserName = s.Key.UserName, Ip = s.Key.Ip, NumberOfConnections = s.Count() });
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { connections, "Количество подключений" } };
-                filteredUsers.Add(keyValuePairs);
+
+                if (connections != null)
+                {
+                    filteredUsers.Add(keyValuePairs);
+                }
             }
 
             if(CheckBox24h)
             {
                 var day = Users.Where(d => DateTime.Now.Subtract(d.LoginTime).Days <= 1);
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { day, "Отчёт за сутки" } };
-                filteredUsers.Add(keyValuePairs);
+
+                if (day != null)
+                {
+                    filteredUsers.Add(keyValuePairs);
+                }
             }
 
             if (dialog.FilterIndex==1)
