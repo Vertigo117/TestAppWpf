@@ -178,6 +178,8 @@ namespace TestAppWpf.ViewModel
             Users = new ObservableCollection<User>();
             File.WriteAllText(errorPath, string.Empty);
             ParseLOG();
+            dateFrom = DateTime.Parse("20.06.2017");
+            dateTo = DateTime.Now;
         }
 
 
