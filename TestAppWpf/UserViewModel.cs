@@ -162,7 +162,11 @@ namespace TestAppWpf.ViewModel
             get 
             {
                 return openExportWindowCommand ??
-                    (openExportWindowCommand = new Command(o => { ExportWindow exportWindow = new ExportWindow(); exportWindow.ShowDialog(); })) ;
+                    (openExportWindowCommand = new Command(o => 
+                    {
+                        ExportWindow exportWindow = new ExportWindow();
+                        exportWindow.ShowDialog();
+                    })) ;
             }
         }
 
@@ -174,7 +178,6 @@ namespace TestAppWpf.ViewModel
             Users = new ObservableCollection<User>();
             File.WriteAllText(errorPath, string.Empty);
             ParseLOG();
-            
         }
 
 
