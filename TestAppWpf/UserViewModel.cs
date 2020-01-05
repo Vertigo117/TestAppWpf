@@ -126,14 +126,14 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xlsx|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            //try
-                            //{
-                            FileSave();
-                            //}
-                            //catch (Exception ex)
-                            //{
-                            //    MessageBox.Show(ex.Message);
-                            //}
+                            try
+                            {
+                                FileSave();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
                         }
                     }));
             }
