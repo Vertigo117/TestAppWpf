@@ -39,7 +39,14 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button  Margin="2"  Command="{Binding OpenExportWindowCommand}">Экспорт отчётов</Button>
-            <TextBox Text="{Binding FilterTextBoxText, UpdateSourceTrigger=PropertyChanged}" Name="filterTextBox" Grid.Column="3" Margin="2"></TextBox>
+            <DockPanel Grid.Column="1">
+                <Label>Пользователь</Label>
+                <TextBox Text="{Binding FilterTextBoxName, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
+            </DockPanel>
+            <DockPanel Grid.Column="2">
+                <Label>Компания</Label>
+                <TextBox Text="{Binding FilterTextBoxCompany, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
+            </DockPanel>
         </Grid>
         
         

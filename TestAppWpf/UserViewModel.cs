@@ -6,16 +6,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web.UI;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Input;
-using TestAppWpf.Properties;
-
 
 namespace TestAppWpf.ViewModel
 {
@@ -36,21 +30,36 @@ namespace TestAppWpf.ViewModel
         private bool checkBoxOrgs;
         private bool checkBoxConnections;
         private bool checkBox24h;
-        private string filterTextBoxText = "";
+        private string filterTextBoxName = "";
+        private string filterTextBoxCompany = "";
         private DateTime dateFrom;
         private DateTime dateTo;
         SaveFileDialog dialog;
 
-        public string FilterTextBoxText
+        public string FilterTextBoxCompany
         {
             get
             {
-                return filterTextBoxText;
+                return filterTextBoxCompany;
             }
             set
             {
-                filterTextBoxText = value;
-                OnPropertyChanged("FilterTextBoxText");
+                filterTextBoxCompany = value;
+                OnPropertyChanged("FilterTextBoxCompany");
+                DataGridSource.Refresh();
+            }
+        }
+
+        public string FilterTextBoxName
+        {
+            get
+            {
+                return filterTextBoxName;
+            }
+            set
+            {
+                filterTextBoxName = value;
+                OnPropertyChanged("FilterTextBoxName");
                 DataGridSource.Refresh();
             }
         }
@@ -198,7 +207,7 @@ namespace TestAppWpf.ViewModel
             dateFrom = DateTime.Parse("20.06.2017");
             dateTo = DateTime.Now;
             DataGridSource = CollectionViewSource.GetDefaultView(Users);
-            DataGridSource.Filter = filter => (filter as User).UserName.ToLower().Contains(filterTextBoxText.ToLower());
+            DataGridSource.Filter = filter => (filter as User).UserName.ToLower().Contains(filterTextBoxName.ToLower()) && (filter as User).Organization.ToLower().Contains(filterTextBoxCompany.ToLower());
         }
 
 
