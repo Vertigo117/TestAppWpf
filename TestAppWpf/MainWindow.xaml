@@ -24,7 +24,6 @@
                 <DataGridTextColumn Header="Организация" Binding="{Binding Organization}"/>
                 <DataGridTextColumn Header="IP Адрес" Binding="{Binding Ip}"/>
                 <DataGridTextColumn Header="Уникальный идентификатор сессии" Binding="{Binding SessionId}"/>
-                <DataGridTextColumn Header="Уникальный идентификатор сессии" Binding="{Binding SessionId}"/>
                 <DataGridTextColumn Header="Дата и время входа в систему" Binding="{Binding LoginTime}"/>
                 <DataGridTextColumn Header="Дата и время выхода из системы" Binding="{Binding LogoutTime}"/>
                 <DataGridTextColumn Header="Код завершения сессии" Binding="{Binding EndCode}"/>
@@ -44,8 +43,12 @@
                 <TextBox Text="{Binding FilterTextBoxName, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
             </DockPanel>
             <DockPanel Grid.Column="2">
-                <Label>Компания</Label>
-                <TextBox Text="{Binding FilterTextBoxCompany, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
+                <Label>Организация</Label>
+                <TextBox Text="{Binding FilterTextBoxOrganization, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
+            </DockPanel>
+            <DockPanel Grid.Column="3">
+                <Label>IP адрес</Label>
+                <TextBox Text="{Binding FilterTextBoxIp, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
             </DockPanel>
         </Grid>
         

@@ -31,21 +31,36 @@ namespace TestAppWpf.ViewModel
         private bool checkBoxConnections;
         private bool checkBox24h;
         private string filterTextBoxName = "";
-        private string filterTextBoxCompany = "";
+        private string filterTextBoxOrganization = "";
+        private string filterTextBoxIp = "";
         private DateTime dateFrom;
         private DateTime dateTo;
         SaveFileDialog dialog;
 
-        public string FilterTextBoxCompany
+        public string FilterTextBoxIp
         {
             get
             {
-                return filterTextBoxCompany;
+                return filterTextBoxIp;
             }
             set
             {
-                filterTextBoxCompany = value;
-                OnPropertyChanged("FilterTextBoxCompany");
+                filterTextBoxIp = value;
+                OnPropertyChanged("FilterTextBoxIp");
+                DataGridSource.Refresh();
+            }
+        }
+
+        public string FilterTextBoxOrganization
+        {
+            get
+            {
+                return filterTextBoxOrganization;
+            }
+            set
+            {
+                filterTextBoxOrganization = value;
+                OnPropertyChanged("FilterTextBoxOrganization");
                 DataGridSource.Refresh();
             }
         }
@@ -207,7 +222,9 @@ namespace TestAppWpf.ViewModel
             dateFrom = DateTime.Parse("20.06.2017");
             dateTo = DateTime.Now;
             DataGridSource = CollectionViewSource.GetDefaultView(Users);
-            DataGridSource.Filter = filter => (filter as User).UserName.ToLower().Contains(filterTextBoxName.ToLower()) && (filter as User).Organization.ToLower().Contains(filterTextBoxCompany.ToLower());
+            DataGridSource.Filter = filter => 
+            (filter as User).UserName.ToLower().Contains(filterTextBoxName.ToLower()) && (filter as User).Organization.ToLower().Contains(filterTextBoxOrganization.ToLower())
+            && (filter as User).Ip.ToLower().Contains(filterTextBoxIp.ToLower());
         }
 
 
