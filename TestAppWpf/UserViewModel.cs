@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.UI;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using TestAppWpf.Properties;
 
@@ -25,6 +26,7 @@ namespace TestAppWpf.ViewModel
         private string ipPattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?)$";
         private string dateTimePattern = @"^([1-9]|([012][0-9])|(3[01])).([0]{0,1}[1-9]|1[012]).\d\d\d\d (20|21|22|23|[0-1]?\d):[0-5]?\d:[0-5]?\d$";
         public ObservableCollection<User> Users { get;}
+        public ICollectionView DataGridSource { get; set; }
         private Command openExportWindowCommand;
         private Command saveFileCommand;
         private bool calendarVisible;
@@ -34,9 +36,24 @@ namespace TestAppWpf.ViewModel
         private bool checkBoxOrgs;
         private bool checkBoxConnections;
         private bool checkBox24h;
+        private string filterTextBoxText = "";
         private DateTime dateFrom;
         private DateTime dateTo;
         SaveFileDialog dialog;
+
+        public string FilterTextBoxText
+        {
+            get
+            {
+                return filterTextBoxText;
+            }
+            set
+            {
+                filterTextBoxText = value;
+                OnPropertyChanged("FilterTextBoxText");
+                DataGridSource.Refresh();
+            }
+        }
 
         public bool CheckBox24h 
         { 
@@ -180,6 +197,8 @@ namespace TestAppWpf.ViewModel
             ParseLOG();
             dateFrom = DateTime.Parse("20.06.2017");
             dateTo = DateTime.Now;
+            DataGridSource = CollectionViewSource.GetDefaultView(Users);
+            DataGridSource.Filter = filter => (filter as User).UserName.ToLower().Contains(filterTextBoxText.ToLower());
         }
 
 
