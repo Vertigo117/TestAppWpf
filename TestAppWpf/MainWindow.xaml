@@ -20,11 +20,11 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Width="50" Header="№" Binding="{Binding Index}"/>
+                <DataGridTextColumn Header="№" Binding="{Binding Index}"/>
                 <DataGridTextColumn Header="Пользователь" Binding="{Binding UserName}"/>
                 <DataGridTextColumn Header="Организация" Binding="{Binding Organization}"/>
                 <DataGridTextColumn Header="IP Адрес" Binding="{Binding Ip}"/>
-                <DataGridTextColumn MinWidth="300" Header="Уникальный идентификатор сессии" Binding="{Binding SessionId}"/>
+                <DataGridTextColumn Header="Уникальный идентификатор сессии" Binding="{Binding SessionId}"/>
                 <DataGridTextColumn Header="Дата и время входа в систему" Binding="{Binding LoginTime}"/>
                 <DataGridTextColumn Header="Дата и время выхода из системы" Binding="{Binding LogoutTime}"/>
                 <DataGridTextColumn Header="Код завершения сессии" Binding="{Binding EndCode}"/>
