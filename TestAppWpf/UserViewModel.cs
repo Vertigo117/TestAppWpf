@@ -212,10 +212,6 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xlsx|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            if(File.Exists(dialog.FileName))
-                            {
-                                File.Delete(dialog.FileName);
-                            }
                             try
                             {
                                 FileSave();
@@ -404,14 +400,22 @@ namespace TestAppWpf.ViewModel
                 }
             }
 
-            if (dialog.FilterIndex==1)
+            if(filteredUsers.Count != 0)
             {
-                Export.AsXls<object>(filteredUsers, dialog.FileName);
-            }
+                if (File.Exists(dialog.FileName))
+                {
+                    File.Delete(dialog.FileName);
+                }
 
-            if (dialog.FilterIndex == 2)
-            {
-                Export.AsXml<object>(filteredUsers, dialog.FileName);
+                if (dialog.FilterIndex == 1)
+                {
+                    Export.AsXls<object>(filteredUsers, dialog.FileName);
+                }
+
+                if (dialog.FilterIndex == 2)
+                {
+                    Export.AsXml<object>(filteredUsers, dialog.FileName);
+                }
             }
         }
 
