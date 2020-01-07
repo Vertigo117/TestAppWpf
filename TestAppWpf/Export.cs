@@ -53,8 +53,8 @@ namespace TestAppWpf
 
                         for (int i = 0; i < properties.Length; i++)
                         {
-                              workSheet.Cells[1, i + 1].Value = properties[i].Name;
-                              workSheet.Cells[1, i + 1].Style.Font.Bold = true;
+                            workSheet.Cells[1, i + 1].Value = properties[i].Name;
+                            workSheet.Cells[1, i + 1].Style.Font.Bold = true;
                         }
 
                         for (int i = 0; i < pair.Key.Count(); i++)
@@ -62,18 +62,18 @@ namespace TestAppWpf
                             for (int j = 0; j < properties.Length; j++)
                             {
                                 var propertyValue = properties[j].GetValue(pair.Key.ElementAt(i));
-                                if(propertyValue is DateTime)
+                                workSheet.Cells[i + 2, j + 1].Value = propertyValue;
+
+                                if (propertyValue is DateTime)
                                 {
-                                    workSheet.Cells[i + 2, j + 1].Value = propertyValue.ToString();
+                                    workSheet.Cells[i + 2, j + 1].Style.Numberformat.Format = "dd.mm.yyyy hh:mm:ss";
                                 }
-                                else
-                                {
-                                    workSheet.Cells[i + 2, j + 1].Value = propertyValue;
-                                }
+                                
                             }
                         }
 
                         workSheet.Cells.AutoFitColumns();
+                        workSheet.View.FreezePanes(2, 1);
                     }
                 }
 
