@@ -417,6 +417,10 @@ namespace TestAppWpf.ViewModel
                     Export.AsXml<object>(filteredUsers, dialog.FileName);
                 }
             }
+            else
+            {
+                throw new Exception("Не выбрано ни одного отчёта для сохранения");
+            }
         }
 
     }
