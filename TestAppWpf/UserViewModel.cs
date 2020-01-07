@@ -212,14 +212,18 @@ namespace TestAppWpf.ViewModel
                         dialog.Filter = "Excel Worksheets|*.xlsx|XML Files|*.xml";
                         if (dialog.ShowDialog()==true)
                         {
-                            try
+                            if(File.Exists(dialog.FileName))
                             {
+                                File.Delete(dialog.FileName);
+                            }
+                            //try
+                            //{
                                 FileSave();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    MessageBox.Show(ex.Message);
+                            //}
                         }
                     }));
             }
@@ -349,7 +353,7 @@ namespace TestAppWpf.ViewModel
                 var filteredByPeriod = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo && u.EndCode==1);
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { filteredByPeriod, "Ошибки за период" } };
 
-                if(filteredByPeriod != null)
+                if(filteredByPeriod.Count() != 0)
                 {
                     filteredUsers.Add(keyValuePairs);
                 }
@@ -372,7 +376,7 @@ namespace TestAppWpf.ViewModel
                 var orgs = Users.Select(s => new { s.UserName, s.Ip, TimeSubtr = (s.LogoutTime - s.LoginTime).TotalMinutes }).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new UserTimeOnline { Total = s.Count(), UserName= s.Key.UserName, Ip= s.Key.Ip, TimeOnline = s.Sum(sum => sum.TimeSubtr) });
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { orgs, "Отчёт по организациям" } };
 
-                if (orgs != null)
+                if (orgs.Count() != 0)
                 {
                     filteredUsers.Add(keyValuePairs);
                 }
@@ -383,7 +387,7 @@ namespace TestAppWpf.ViewModel
                 var connections = Users.Where(u => u.LoginTime >= dateFrom && u.LoginTime <= dateTo).GroupBy(g => new { g.UserName, g.Ip }).Select(s => new UserConnection { UserName = s.Key.UserName, Ip = s.Key.Ip, NumberOfConnections = s.Count() });
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { connections, "Количество подключений" } };
 
-                if (connections != null)
+                if (connections.Count() != 0)
                 {
                     filteredUsers.Add(keyValuePairs);
                 }
@@ -394,7 +398,7 @@ namespace TestAppWpf.ViewModel
                 var day = Users.Where(d => DateTime.Now.Subtract(d.LoginTime).Days <= 1);
                 Dictionary<IEnumerable<object>, string> keyValuePairs = new Dictionary<IEnumerable<object>, string>() { { day, "Отчёт за сутки" } };
 
-                if (day != null)
+                if (day.Count() != 0)
                 {
                     filteredUsers.Add(keyValuePairs);
                 }

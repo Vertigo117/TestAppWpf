@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI;
 using System.Xml.Serialization;
-using Microsoft.Office.Interop.Excel;
+using OfficeOpenXml;
 
 
 namespace TestAppWpf
 {
     static class Export
     {
-        
-
-
-
         public static void AsXml<T> (ArrayList usersList, string saveFilePath)
         {
             int stringLengtgh = saveFilePath.Length - 4;
@@ -47,58 +37,48 @@ namespace TestAppWpf
 
         public static void AsXls<T>(ArrayList usersList, string saveFilePath)
         {
-            Application excelApp = new Application();
-            Range excelCellrange;
-            excelApp.Workbooks.Add();
-            Worksheet workSheet = excelApp.ActiveSheet;
+            FileInfo fileInfo = new FileInfo(saveFilePath);
 
-
-            int counter = 0;
-
-            foreach (IDictionary<IEnumerable<T>,string> u in usersList)
+            using (ExcelPackage excelPackage = new ExcelPackage(fileInfo))
             {
-                
-
-                foreach (KeyValuePair<IEnumerable<T>,string> pair in u)
+                foreach (IDictionary<IEnumerable<T>, string> dictrionary in usersList)
                 {
-                    workSheet = excelApp.ActiveSheet;
-                    workSheet.Name = pair.Value;
-                    Type t = pair.Key.First().GetType();
-                    PropertyInfo[] properties = t.GetProperties();
-
-
-                    for (int i = 0; i < properties.Length; i++)
+                    foreach (KeyValuePair<IEnumerable<T>, string> pair in dictrionary)
                     {
-                        workSheet.Cells[1, i + 1] = properties[i].Name;
-                    }
-
-                    for(int i = 0; i < pair.Key.Count(); i++)
-                    {
-                        for(int j =0;j<properties.Length;j++)
-                        {
-                            workSheet.Cells[i + 2, j + 1] = properties[j].GetValue(pair.Key.ElementAt(i));
-                        }
-                    }
                         
+                        ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets.Add(pair.Value);
 
-                    excelCellrange = workSheet.Range[workSheet.Cells[1, 1], workSheet.Cells[pair.Key.Count(), pair.Key.First().GetType().GetProperties().Length]];
-                    excelCellrange.EntireColumn.AutoFit();
-                    counter++;
+                        Type type = pair.Key.First().GetType();
+                        PropertyInfo[] properties = type.GetProperties();
 
-                    if (counter < usersList.Count)
-                    {
-                        excelApp.Worksheets.Add();
+                        for (int i = 0; i < properties.Length; i++)
+                        {
+                              workSheet.Cells[1, i + 1].Value = properties[i].Name;
+                              workSheet.Cells[1, i + 1].Style.Font.Bold = true;
+                        }
+
+                        for (int i = 0; i < pair.Key.Count(); i++)
+                        {
+                            for (int j = 0; j < properties.Length; j++)
+                            {
+                                var propertyValue = properties[j].GetValue(pair.Key.ElementAt(i));
+                                if(propertyValue is DateTime)
+                                {
+                                    workSheet.Cells[i + 2, j + 1].Value = propertyValue.ToString();
+                                }
+                                else
+                                {
+                                    workSheet.Cells[i + 2, j + 1].Value = propertyValue;
+                                }
+                            }
+                        }
+
+                        workSheet.Cells.AutoFitColumns();
                     }
                 }
 
-
+                excelPackage.Save();
             }
-
-
-            workSheet.SaveAs(saveFilePath);
-            excelApp.Quit();
-        }
-
-        
+        }  
     }
 }
