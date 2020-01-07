@@ -216,14 +216,14 @@ namespace TestAppWpf.ViewModel
                             {
                                 File.Delete(dialog.FileName);
                             }
-                            //try
-                            //{
+                            try
+                            {
                                 FileSave();
-                            //}
-                            //catch (Exception ex)
-                            //{
-                            //    MessageBox.Show(ex.Message);
-                            //}
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
                         }
                     }));
             }
